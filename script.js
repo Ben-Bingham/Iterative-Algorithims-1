@@ -1,7 +1,6 @@
 var white = [255, 255, 255];
 var green = [0, 255, 0];
-
-var framesPerAction = 120;
+var red = [255, 0, 0];
 
 class DataPoint {
   constructor(val) {
@@ -40,12 +39,6 @@ function drawDataSet(p5, data) {
   }
 }
 
-function resetDataColours(data) {
-  for (var i = 0; i < data.length; i++) {
-    data[i].color = white;
-  }
-}
-
 function canvasSetup(p5) {
   p5.createCanvas(400, 200);
   p5.frameRate(60);
@@ -53,6 +46,7 @@ function canvasSetup(p5) {
 
 var length = 25;
 var timeBetweenActions = 20;
+
 var bubbleSort = function(p5) {
   var data = generateUnsortedData(length);
 
@@ -90,4 +84,75 @@ var bubbleSort = function(p5) {
   };
 }
 
-var myp5 = new p5(bubbleSort, 'bubbleSort');
+var cocktailSort = function(p5) {
+  var data = generateUnsortedData(length);
+
+  function swap(array, index1, index2) {
+    var temp = array[index1];
+    array[index1] = array[index2];
+    array[index2] = temp;
+  }
+  
+  p5.setup = async function() {
+    canvasSetup(p5);
+    p5.background(0);
+    drawDataSet(p5, data);
+
+    var elementsSwapped = true;
+    var start = 0;
+    var end = data.length;
+
+    // if elements are being swapped the list is not yet sorted
+    while (elementsSwapped == true) {
+      // Stage 1
+      elementsSwapped = false;
+
+      for (var i = 0; i < data.length - 1; i++) {
+        data[i].color = green;
+        if (data[i].value > data[i + 1].value) {
+          swap(data, i, i + 1);
+          elementsSwapped = true;
+          p5.background(0);
+          drawDataSet(p5, data);
+
+          await new Promise(r => setTimeout(r, timeBetweenActions));
+        }
+        data[i].color = white;
+        data[i + 1].color = white;
+      }
+      
+      if (elementsSwapped == false) {
+        break;
+      }
+
+      // Stage 2
+      elementsSwapped = false;
+      end--;
+
+      for (var i = end - 1; i >= start; i--) {
+        data[i].color = red;
+        if (data[i].value > data[i + 1].value) {
+          swap(data, i, i + 1);
+          elementsSwapped = true;
+          p5.background(0);
+          drawDataSet(p5, data);
+
+          await new Promise(r => setTimeout(r, timeBetweenActions));
+        }
+        data[i].color = white;
+        data[i + 1].color = white;
+      }
+
+      start++;
+    }
+
+    for (var g = 0; g < data.length; g++) {
+      data[g].color = white;
+    }
+    p5.background(0);
+    drawDataSet(p5, data);
+  };
+}
+
+var bubbleSortP5 = new p5(bubbleSort, 'bubbleSort');
+var cocktailSortP5 = new p5(cocktailSort, 'cocktailSort');
