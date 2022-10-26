@@ -44,17 +44,17 @@ function canvasSetup(p5) {
   p5.frameRate(60);
 }
 
+function swap(array, index1, index2) {
+  var temp = array[index1];
+  array[index1] = array[index2];
+  array[index2] = temp;
+}
+
 var length = 25;
 var timeBetweenActions = 20;
 
 var bubbleSort = function(p5) {
   var data = generateUnsortedData(length);
-
-  function swap(array, index1, index2) {
-    var temp = array[index1];
-    array[index1] = array[index2];
-    array[index2] = temp;
-  }
   
   p5.setup = async function() {
     canvasSetup(p5);
@@ -86,12 +86,6 @@ var bubbleSort = function(p5) {
 
 var cocktailSort = function(p5) {
   var data = generateUnsortedData(length);
-
-  function swap(array, index1, index2) {
-    var temp = array[index1];
-    array[index1] = array[index2];
-    array[index2] = temp;
-  }
   
   p5.setup = async function() {
     canvasSetup(p5);
@@ -154,5 +148,52 @@ var cocktailSort = function(p5) {
   };
 }
 
+var gnomeSort = function(p5) {
+  var data = generateUnsortedData(length);
+
+  p5.setup = async function() {
+    canvasSetup(p5);
+    p5.background(0);
+    drawDataSet(p5, data);
+
+    var i = 0;
+
+    while (i < data.length) {
+      console.log(i);
+      data[i].color = green;
+      if (i != 0) {
+        data[i - 1].color = red;
+      }
+
+      if (i == 0) {
+        i++;
+      }
+      if (data[i].value >= data[i - 1].value) {
+        i++;
+      }
+      else {
+        swap(data, i, i - 1);
+        i--;
+      }
+
+      p5.background(0);
+      drawDataSet(p5, data);
+
+      for (var g = 0; g < data.length; g++) {
+        data[g].color = white;
+      }
+
+      await new Promise(r => setTimeout(r, timeBetweenActions));
+    }
+
+    for (var g = 0; g < data.length; g++) {
+      data[g].color = white;
+    }
+    p5.background(0);
+    drawDataSet(p5, data);
+  };
+}
+
 var bubbleSortP5 = new p5(bubbleSort, 'bubbleSort');
 var cocktailSortP5 = new p5(cocktailSort, 'cocktailSort');
+var gnomeSortP5 = new p5(gnomeSort, 'gnomeSort');
