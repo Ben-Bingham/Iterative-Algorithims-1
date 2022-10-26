@@ -159,7 +159,6 @@ var gnomeSort = function(p5) {
     var i = 0;
 
     while (i < data.length) {
-      console.log(i);
       data[i].color = green;
       if (i != 0) {
         data[i - 1].color = red;
@@ -194,6 +193,50 @@ var gnomeSort = function(p5) {
   };
 }
 
+var selectionSort = function(p5) {
+  var data = generateUnsortedData(length);
+  
+  p5.setup = async function() {
+    canvasSetup(p5);
+    p5.background(0);
+    drawDataSet(p5, data);
+
+    for (var i = 0; i < data.length - 1; i++) {
+      var minUnsortedIndex = i;
+      data[i].color = green;
+      for (var j = i + 1; j < data.length; j++) {
+        data[j].color = red;
+
+        p5.background(0);
+        drawDataSet(p5, data);
+        await new Promise(r => setTimeout(r, timeBetweenActions));
+
+        if (data[j].value < data[minUnsortedIndex].value) {
+          minUnsortedIndex = j;
+        }
+        
+        data[j].color = white;
+      }
+      swap(data, i, minUnsortedIndex);
+
+      for (var g = 0; g < data.length; g++) {
+        data[g].color = white;
+      }
+
+      p5.background(0);
+      drawDataSet(p5, data);
+      await new Promise(r => setTimeout(r, timeBetweenActions));
+    }
+
+    for (var g = 0; g < data.length; g++) {
+      data[g].color = white;
+    }
+    p5.background(0);
+    drawDataSet(p5, data);
+  };
+}
+
 var bubbleSortP5 = new p5(bubbleSort, 'bubbleSort');
 var cocktailSortP5 = new p5(cocktailSort, 'cocktailSort');
 var gnomeSortP5 = new p5(gnomeSort, 'gnomeSort');
+var selectionSortP5 = new p5(selectionSort, 'selectionSort');
