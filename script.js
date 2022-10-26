@@ -236,7 +236,46 @@ var selectionSort = function(p5) {
   };
 }
 
+var strandSort = function(p5) {
+  var data = generateUnsortedData(length);
+  
+  function strandSortFunc(inputData, outputData) {
+    var sublist = [];
+    sublist.push(inputData[0].value);
+    inputData.splice(0, 1);
+
+    for (var i = 0; i < inputData.length;) {
+      if (inputData[i].value > sublist[sublist.length].value) {
+        inputData.splice(i, 1);
+        i--;
+      }
+      else {
+        i++;
+      }
+    }
+
+    outputData.concat(sublist);
+    strandSortFunc(inputData, outputData);
+  }
+
+  p5.setup = async function() {
+    canvasSetup(p5);
+    p5.background(0);
+    drawDataSet(p5, data);
+
+    var dataOut = [];
+    strandSortFunc(data, dataOut);
+
+    for (var g = 0; g < data.length; g++) {
+      data[g].color = white;
+    }
+    p5.background(0);
+    drawDataSet(p5, dataOut);
+  };
+}
+
 var bubbleSortP5 = new p5(bubbleSort, 'bubbleSort');
 var cocktailSortP5 = new p5(cocktailSort, 'cocktailSort');
 var gnomeSortP5 = new p5(gnomeSort, 'gnomeSort');
 var selectionSortP5 = new p5(selectionSort, 'selectionSort');
+var strandSortP5 = new p5(strandSort, 'strandSort');
