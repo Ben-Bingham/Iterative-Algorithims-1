@@ -289,8 +289,56 @@ var combSort = function(p5) {
   };
 }
 
+var insertionSort = function(p5) {
+  var data = generateUnsortedData(length);
+  
+  p5.setup = async function() {
+    canvasSetup(p5);
+    p5.background(0);
+    drawDataSet(p5, data);
+
+    var key, j;
+
+    for (var i = 1; i < data.length; i++) {
+      key = data[i].value;
+      data[i].color = green;
+      j = i - 1;
+      p5.background(0);
+      drawDataSet(p5, data);
+      await new Promise(r => setTimeout(r, timeBetweenActions));
+
+      while (j >= 0 && data[j].value > key) {
+        data[j + 1].value = data[j].value;
+        j--;
+
+        data[j + 1].color = red;
+
+        p5.background(0);
+        drawDataSet(p5, data);
+        await new Promise(r => setTimeout(r, timeBetweenActions));
+        for (var g = 0; g < data.length; g++) {
+          data[g].color = white;
+        }
+      }
+      data[j + 1].value = key;
+
+      for (var g = 0; g < data.length; g++) {
+        data[g].color = white;
+      }
+    }
+
+    for (var g = 0; g < data.length; g++) {
+      data[g].color = white;
+    }
+    p5.background(0);
+    drawDataSet(p5, data);
+  };
+}
+
+
 var bubbleSortP5 = new p5(bubbleSort, 'bubbleSort');
 var cocktailSortP5 = new p5(cocktailSort, 'cocktailSort');
 var gnomeSortP5 = new p5(gnomeSort, 'gnomeSort');
 var selectionSortP5 = new p5(selectionSort, 'selectionSort');
 var combSortP5 = new p5(combSort, 'combSort');
+var insertionSortP5 = new p5(insertionSort, 'insertionSort');
