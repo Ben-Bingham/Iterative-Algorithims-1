@@ -236,26 +236,17 @@ var selectionSort = function(p5) {
   };
 }
 
-var strandSort = function(p5) {
+var combSort = function(p5) {
   var data = generateUnsortedData(length);
   
-  function strandSortFunc(inputData, outputData) {
-    var sublist = [];
-    sublist.push(inputData[0].value);
-    inputData.splice(0, 1);
+  function getNextGap(gap) {
+    gap = parseInt((gap * 10)/13, 10);
 
-    for (var i = 0; i < inputData.length;) {
-      if (inputData[i].value > sublist[sublist.length].value) {
-        inputData.splice(i, 1);
-        i--;
-      }
-      else {
-        i++;
-      }
+    if (gap < 1) {
+      gap = 1;
     }
 
-    outputData.concat(sublist);
-    strandSortFunc(inputData, outputData);
+    return gap;
   }
 
   p5.setup = async function() {
@@ -263,14 +254,38 @@ var strandSort = function(p5) {
     p5.background(0);
     drawDataSet(p5, data);
 
-    var dataOut = [];
-    strandSortFunc(data, dataOut);
+    var gap = data.length;
+    var elementsSwapped = true;
+
+    while (gap != 1 || elementsSwapped == true) {
+      console.log("loop");
+      gap = getNextGap(gap);
+
+      elementsSwapped = false;
+
+      for (var i = 0; i < data.length - gap; i++) {
+        data[i].color = green;
+        data[i + gap].color = red;
+        if (data[i].value > data[i + gap].value) {
+          swap(data, i, i + gap);
+          elementsSwapped = true;
+        }
+
+        p5.background(0);
+        drawDataSet(p5, data);
+
+        await new Promise(r => setTimeout(r, timeBetweenActions));
+
+        data[i].color = white;
+        data[i + gap].color = white;
+      }
+    }
 
     for (var g = 0; g < data.length; g++) {
       data[g].color = white;
     }
     p5.background(0);
-    drawDataSet(p5, dataOut);
+    drawDataSet(p5, data);
   };
 }
 
@@ -278,4 +293,4 @@ var bubbleSortP5 = new p5(bubbleSort, 'bubbleSort');
 var cocktailSortP5 = new p5(cocktailSort, 'cocktailSort');
 var gnomeSortP5 = new p5(gnomeSort, 'gnomeSort');
 var selectionSortP5 = new p5(selectionSort, 'selectionSort');
-var strandSortP5 = new p5(strandSort, 'strandSort');
+var combSortP5 = new p5(combSort, 'combSort');
