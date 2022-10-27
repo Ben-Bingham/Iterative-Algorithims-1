@@ -40,7 +40,7 @@ function drawDataSet(p5, data) {
 }
 
 function canvasSetup(p5) {
-  p5.createCanvas(400, 200);
+  p5.createCanvas(800, 200);
   p5.frameRate(60);
 }
 
@@ -258,7 +258,6 @@ var combSort = function(p5) {
     var elementsSwapped = true;
 
     while (gap != 1 || elementsSwapped == true) {
-      console.log("loop");
       gap = getNextGap(gap);
 
       elementsSwapped = false;
@@ -335,10 +334,120 @@ var insertionSort = function(p5) {
   };
 }
 
-
 var bubbleSortP5 = new p5(bubbleSort, 'bubbleSort');
 var cocktailSortP5 = new p5(cocktailSort, 'cocktailSort');
 var gnomeSortP5 = new p5(gnomeSort, 'gnomeSort');
 var selectionSortP5 = new p5(selectionSort, 'selectionSort');
 var combSortP5 = new p5(combSort, 'combSort');
 var insertionSortP5 = new p5(insertionSort, 'insertionSort');
+
+var searchTimeBetweenActions = 2000;
+var searchDataLength = 100;
+var searchValue = 0;
+var linearSearch = function(p5) {
+  var data = generateUnsortedData(searchDataLength);
+  
+  p5.setup = async function() {
+    canvasSetup(p5);
+    p5.background(0);
+    drawDataSet(p5, data);
+
+    var searchValue = 5;
+    for (var i = 0; i < data.length; i++) {
+      data[i].color = red;
+
+      p5.background(0);
+      drawDataSet(p5, data);
+      await new Promise(r => setTimeout(r, searchTimeBetweenActions));
+
+      if (data[i].value == searchValue) {
+        data[i].color = green;
+        return;
+      }
+      data[i].color = white;
+    }
+  };
+
+  p5.draw = function() {
+    p5.background(0);
+    drawDataSet(p5, data);
+  }
+}
+
+var binarySearch = function(p5) {
+  var data = [];
+  for (var i = 1; i < searchDataLength + 1; i++) {
+    data.push(new DataPoint(i));
+  }
+  
+  p5.setup = async function() {
+    canvasSetup(p5);
+    p5.background(0);
+    drawDataSet(p5, data);
+    await new Promise(r => setTimeout(r, searchTimeBetweenActions));
+
+    var x = searchValue;
+    var low = 0;
+    var high = data.length - 1;
+    var mid;
+    while (high - low > 1) {
+      mid = (low + high) / 2;
+      mid = Math.floor(mid);
+      if (data[mid].value == x) {
+        data[mid].color = green;
+        for (var i = 0; i < data.length; i++) {
+          if (data[i].color != green) {
+            data[i].color = red;
+          }
+        }
+      }
+      else if (data[high].value == x) {
+        data[high].color = green;
+        for (var i = 0; i < data.length; i++) {
+          if (data[i].color != green) {
+            data[i].color = red;
+          }
+        }
+      }
+      else if (data[low].value == x) {
+        data[low].color = green;
+        for (var i = 0; i < data.length; i++) {
+          if (data[i].color != green) {
+            data[i].color = red;
+          }
+        }
+      }
+      else if (data[mid].value < x) {
+        for (var i = 0; i < mid + 1; i++) {
+          data[i].color = red;
+        }
+        low = mid + 1;
+      }
+      else {
+        for (var i = mid - 1; i < high + 1; i++) {
+          data[i].color = red;
+        }
+        high = mid;
+      }
+
+      p5.background(0);
+      drawDataSet(p5, data);
+      await new Promise(r => setTimeout(r, searchTimeBetweenActions));
+    }
+  };
+
+  p5.draw = function() {
+    p5.background(0);
+    drawDataSet(p5, data);
+  }
+}
+
+var linearSearchP5 = new p5(linearSearch, 'linearSearch');
+var binarySearchP5 = new p5(binarySearch, 'binarySearch');
+
+function setSearchNumber(val) {
+  alert(val);
+  searchValue = val;
+  linearSearchP5.setup();
+  binarySearchP5.setup();
+}
