@@ -12,7 +12,15 @@
     <script src="script.js"></script>
     <h1>Iterative Algorithims 1</h1>
     <h2>Searches:</h2>
-    <button onclick="setSearchNumber(4)"></button>
+    <div id='searchSelection'>
+      Time per action:<br>
+      1 milisecond<input type='range' min='1' max='5000' id='searchTime' value='500'>5000 miliseconds<br>
+      Number of elements:<br>
+      2 elements<input type='range' min='2' max='200' id='searchLength' value='20'>200 elements<br>
+      Element to find:<br>
+      <input type='number' id='searchData' value='10'><br>
+      <button onclick='startSearch()'>Start</button>
+    </div>
     <ul>
       <li>Linear Search
         <div id='linearSearch'></div>
@@ -22,6 +30,13 @@
       </li>
     </ul>
     <h2>Sorts:</h2>
+    <div id='sortSelection'>
+      Time per action:<br>
+      1 miliseconds<input type='range' min='1' max='1000' id='sortTime' value='20'>1000 miliseconds<br>
+      Number of elements:<br>
+      2 elements<input type='range' min='2' max='200' id='sortLength' value='25'>200 elements<br>
+      <button onclick='startSort()'>Restart</button>
+    </div>
     <ul>
       <li>Bubble Sort
         <div id='bubbleSort'></div>

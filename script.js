@@ -341,8 +341,27 @@ var selectionSortP5 = new p5(selectionSort, 'selectionSort');
 var combSortP5 = new p5(combSort, 'combSort');
 var insertionSortP5 = new p5(insertionSort, 'insertionSort');
 
-var searchTimeBetweenActions = 2000;
-var searchDataLength = 100;
+function startSort() {
+  timeBetweenActions = document.getElementById('sortTime').value;
+  length = document.getElementById('sortLength').value;
+
+  bubbleSortP5.remove();
+  cocktailSortP5.remove();
+  gnomeSortP5.remove();
+  selectionSortP5.remove();
+  combSortP5.remove();
+  insertionSortP5.remove();
+
+  bubbleSortP5 = new p5(bubbleSort, 'bubbleSort');
+  cocktailSortP5 = new p5(cocktailSort, 'cocktailSort');
+  gnomeSortP5 = new p5(gnomeSort, 'gnomeSort');
+  selectionSortP5 = new p5(selectionSort, 'selectionSort');
+  combSortP5 = new p5(combSort, 'combSort');
+  insertionSortP5 = new p5(insertionSort, 'insertionSort');
+}
+
+var searchTimeBetweenActions = 500;
+var searchDataLength = 20;
 var searchValue = 0;
 var linearSearch = function(p5) {
   var data = generateUnsortedData(searchDataLength);
@@ -352,18 +371,17 @@ var linearSearch = function(p5) {
     p5.background(0);
     drawDataSet(p5, data);
 
-    var searchValue = 5;
     for (var i = 0; i < data.length; i++) {
       data[i].color = red;
-
-      p5.background(0);
-      drawDataSet(p5, data);
-      await new Promise(r => setTimeout(r, searchTimeBetweenActions));
 
       if (data[i].value == searchValue) {
         data[i].color = green;
         return;
       }
+
+      p5.background(0);
+      drawDataSet(p5, data);
+      await new Promise(r => setTimeout(r, searchTimeBetweenActions));
       data[i].color = white;
     }
   };
@@ -376,10 +394,12 @@ var linearSearch = function(p5) {
 
 var binarySearch = function(p5) {
   var data = [];
-  for (var i = 1; i < searchDataLength + 1; i++) {
-    data.push(new DataPoint(i));
+  data.length = searchDataLength;
+
+  for (var i = 0; i < searchDataLength; i++) {
+    data[i] = new DataPoint(i);
   }
-  
+
   p5.setup = async function() {
     canvasSetup(p5);
     p5.background(0);
@@ -445,9 +465,13 @@ var binarySearch = function(p5) {
 var linearSearchP5 = new p5(linearSearch, 'linearSearch');
 var binarySearchP5 = new p5(binarySearch, 'binarySearch');
 
-function setSearchNumber(val) {
-  alert(val);
-  searchValue = val;
-  linearSearchP5.setup();
-  binarySearchP5.setup();
+function startSearch() {
+  searchTimeBetweenActions = document.getElementById('searchTime').value;
+  searchDataLength = document.getElementById('searchLength').value;
+  searchValue = document.getElementById('searchData').value;
+
+  linearSearchP5.remove();
+  binarySearchP5.remove();
+  linearSearchP5 = new p5(linearSearch, 'linearSearch');
+  binarySearchP5 = new p5(binarySearch, 'binarySearch');
 }
